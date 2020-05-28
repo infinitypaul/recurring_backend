@@ -23,7 +23,7 @@ class RegisterController extends Controller
         return (new UserResource($user))
             ->additional([
                 'Authorization' => [
-                    'access_token' => 'Bearer '.$token,
+                    'access_token' => $token,
                     ]]);
     }
 }
