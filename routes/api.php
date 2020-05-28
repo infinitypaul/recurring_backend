@@ -16,18 +16,18 @@ use Illuminate\Support\Facades\Route;
 
 Route::group(['prefix' => 'v1'], function () {
     Route::group(['namespace' => 'Api\Auth'], function (){
-        Route::post('login', 'LoginController@Login');
-        Route::post('register', 'RegisterController@Register');
+        Route::post('login', 'LoginController@Login')->name('signin');
+        Route::post('register', 'RegisterController@Register')->name('signup');
 
     });
 
     Route::group(['namespace' => 'Api\Products'], function (){
-        Route::get('services', 'ServiceController@index');
-        Route::get('services/{service}', 'ServiceController@service');
+        Route::get('services', 'ServiceController@index')->name('services');
+        Route::get('services/{service}', 'ServiceController@service')->name('service.show');
     });
 
     Route::group(['prefix' => 'dashboard', 'namespace' => 'Api\User', 'middleware' => ['auth:sanctum']], function (){
-        Route::get('/', 'DashboardController@index');
+        Route::get('/', 'DashboardController@index')->name('dash');
         Route::post('transaction/{service}', 'TransactionController@create');
         Route::post('transaction/verify/{transaction:reference}', 'TransactionController@verify');
         Route::post('transaction/recurring/{transaction:reference}', 'RecurringController@createPlan');

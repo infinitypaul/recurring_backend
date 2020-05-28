@@ -20,7 +20,6 @@ class RegisterController extends Controller
         $user->save();
         $token = $user->createToken('token-name')->plainTextToken;
 
-
         return (new UserResource($user))
             ->additional([
                 'Authorization' => [

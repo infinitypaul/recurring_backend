@@ -22,10 +22,15 @@ class TransactionController extends Controller
     }
 
     public function verify(Transaction $transaction){
+
         $response = Http::withToken('sk_test_84af83ec016e6185765733f82cd799bb27d85f43')->get('https://api.paystack.co/transaction/verify/'.$transaction->reference);
+
         if($response->successful()){
             $data = $response->json();
-            if(($data['data']['status'] === 'success') && ($data['data']['amount'] === (int)($transaction->price * 100)) && ((bool)$transaction->paid === false)) {
+            $price = (int)ceil(($transaction->price * 100));
+
+            if(($data['data']['status'] === 'success') && ($data['data']['amount'] === $price) && ((bool)$transaction->paid === false)) {
+
                 $transaction->paid = 1;
                 $transaction->user()->associate(request()->user());
                 $transaction->save();
@@ -40,7 +45,11 @@ class TransactionController extends Controller
             }
 
         }
-        return response()->json([], 422);
+        return response()->json([
+            'data' => [
+                'message'=> 'Unable To Verify'
+            ]
+        ], 422);
     }
 
     private function saveAuthCode($code){
